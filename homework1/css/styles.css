@@ -10,7 +10,7 @@ body {
 }
 
 text {
-	font: 6px sans-serif;
+	font: 10px sans-serif;
 }
 
 /*CHART GENERAL*/
@@ -44,7 +44,7 @@ form {
 }
 
 .axis text {
-  font-size: .625em;
+  font-size: 10px;
 }
 
 .line {
