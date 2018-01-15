@@ -28,8 +28,7 @@ var nest = d3.nest()
 var dataByGroup;
 
 var color = d3.scale.category10();
-var country_select = "";
-//var country_select = "United States";
+var country_select = "United States";
 
 var select = d3.select("body").append("div").append("select").attr('class','select').on('change', onchange);
 
@@ -310,8 +309,8 @@ d3.csv("./data/exercise2-olympics.csv", function(error, data) {
       .enter()
       .append('option')
       .attr('value', function (d) { return d; })
-      .text(function (d) { return d; });
-      //.property("selected", function(d){ return d === country_select; });
+      .text(function (d) { return d; })
+      .property("selected", function(d){ return d === country_select; });
 
   data.forEach(function(d) {
     d.date = parseDate(d.date);
