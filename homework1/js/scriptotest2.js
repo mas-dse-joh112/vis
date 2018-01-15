@@ -172,7 +172,7 @@ function create_group(tgroup, svg) {
         return 10 + y1(d.values[0].value / 2); 
       })
       .attr("dy", ".05em")
-      .style("text-anchor","left")
+      .style("text-anchor","right")
       .text(function(d) { 
         return d.key;
       });
@@ -185,6 +185,7 @@ function create_group(tgroup, svg) {
       .style("fill", function(d) { 
         return color(d.group); 
       })
+      .attr("id", "rectid")
       .attr("x", function(d) { 
         return x(d.date); 
       })
@@ -194,22 +195,27 @@ function create_group(tgroup, svg) {
       .attr("width", x.rangeBand())
       .attr("height", function(d) { 
         return y0.rangeBand() - y1(d.value); 
-      })
+      });
 
-  group.selectAll("text")
-      .data(function(d) { 
+  group.selectAll("rectid")
+      .data(function(d) {
+        var t = d;
         return d.values; 
       })
       .enter().append("text")
-      .attr("class","barstext")
-      .attr("x", function(d) { return x(d.date); })
-      .attr("y",function(d) { return y1(d.value); })
+      .attr("x", function(d) {
+        var t = d.date;
+        return x(d.date); 
+      })
+      .attr("y",function(d) {
+        var t = d.value;
+        return y1(d.value); 
+      })
       .text(function(d) {
         if (d.value > 0) {
           return (d.value);
         }
-      })
-
+      });
 
   group.filter(function(d, i) { 
     return !i; 
