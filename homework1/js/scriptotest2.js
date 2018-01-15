@@ -222,6 +222,15 @@ function create_nesting(total) {
 function update_data(sports, years, medals, totals) {
   var tdata = [];
 
+  for (var y in years) {
+    if (y in totals) {
+      tdata.push({'group':"Total",'date':y,'value':totals[y]});
+    }
+    else {
+      tdata.push({'group':"Total",'date':y,'value':0});
+    }
+  }
+
   for (var s in sports) {
     for (var y in years) {
       if (s in medals) {
@@ -238,9 +247,7 @@ function update_data(sports, years, medals, totals) {
     }
   }
 
-  for (var t in totals) {
-    tdata.push({'group':"Total",'date':t,'value':totals[t]});
-  }
+  
 
   return tdata;
 };
