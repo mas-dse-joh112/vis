@@ -1,11 +1,9 @@
 
-var parseDate = d3.time.format("%Y").parse,
-    formatYear = d3.format("04d");
+var parseDate = d3.time.format("%Y").parse;
 
 var formatDate = function(d) {
-    var b = d;
-    var c = d.getFullYear();
-    return c;
+    var t = d;
+    return d.getFullYear();
 };
 
 var margin = {top: 10, right: 20, bottom: 20, left: 100},
@@ -28,103 +26,152 @@ var xAxis = d3.svg.axis()
 var nest = d3.nest()
     .key(function(d) { return d.group; });
 
-var stack = d3.layout.stack()
-    .values(function(d) {
-      var t = d;
-      return d.values; 
-    })
-    .x(function(d) {
-      var t = d;
-      return d.date; 
-    })
-    .y(function(d) {
-      var t = d;
-      return d.value; 
-    })
-    .out(function(d, y0) {
-      var t = d;
-      var z = y0;
-      d.valueOffset = y0; 
-    });
+var dataByGroup;
 
 var color = d3.scale.category10();
+var country_select = "United States";
 
-var svg = d3.select("body").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+var select = d3.select("body").append("div").append("select").attr('class','select').on('change', onchange);
+
+function create_svg() {
+    d3.selectAll('svg').remove();
+     
+    var tsvg = d3.select("body").append("svg")
+              .attr("width", width + margin.left + margin.right)
+              .attr("height", height + margin.top + margin.bottom)
+              .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    return tsvg;
+}
+
+
+
+var svg = create_svg();
 
 var medals = {};
 var odata = [];
 var years = {};
 var sports = {};
+var countries = {};
+var totals = {};
 
-d3.csv("./data/exercise2-olympics.csv", function(error, data) {
-  data.forEach(function(d) {
-    years[d.Year] = 1;
-    sports[d.Sport] = 1;
+function switch_country_medal(country, medals) {
+  for (var c in medals) {
+    if (c == country) {
+        return medals[country];
+      }
+    }
 
-      if (d.Country == "United States") {
-          if (d.Sport in medals) {   
-              if (d.Year in medals[d.Sport]) {
-                medals[d.Sport][d.Year]++;
-              }
-              else {
-                medals[d.Sport][d.Year] = 1;
-              }
-          }
-          else {
-            medals[d.Sport] = {};
-            medals[d.Sport][d.Year] = 1;
-          }
-      }
-  });
+  return {};
+};
 
-  for (var s in sports) {
-    for (var y in years) {
-      if (s in medals) {
-        if (y in medals[s]) {
-          odata.push({'group':s,'date':y,'value':medals[s][y]*500});
-        }
-        else {
-          odata.push({'group':s,'date':y,'value':0});
-        }
-      }
-      else {
-        odata.push({'group':s,'date':y,'value':0});
-      }
+function switch_country_total(country, totals) {
+  for (var c in totals) {
+    if (c == country) {
+      return totals[country];
     }
   }
 
-  data = odata;
+  return {};
+};
 
-  data.forEach(function(d) {
-    var t = d.date;
-    d.date = parseDate(d.date);
-    d.value = +d.value;
-  });
+function onchange() {
+    country_select = d3.select('select').property('value');
+    //d3.select('body').append('p').text(country_select + ' is the last selected option.');
+    var tmedals = switch_country_medal(country_select, medals);
+    var ttotals = switch_country_total(country_select, totals);
 
-  var tempd = data;
+    data = update_data(sports, years, tmedals, ttotals);
+    svg = create_svg();
 
-  var dataByGroup = nest.entries(data);
+    data.forEach(function(d) {
+      d.date = parseDate(d.date);
+      d.value = +d.value;
+    });
 
-  stack(dataByGroup);
-  x.domain(dataByGroup[0].values.map(function(d) { return d.date; }));
-  y0.domain(dataByGroup.map(function(d) { return d.key; }));
-  y1.domain([0, d3.max(data, function(d) { return d.value; })]).range([y0.rangeBand(), 0]);
+    dataByGroup = nest.entries(data);
 
+    x.domain(dataByGroup[0].values.map(function(d) { return d.date; }));
+
+    y0.domain(dataByGroup.map(function(d) { return d.key; }));
+    y1.domain([0, d3.max(data, function(d) { return d.value; })]).range([y0.rangeBand(), 0]);
+  
+    var group = create_group(dataByGroup, svg);
+    transitionMultiples(svg);
+};
+
+function get_total(row) {
+    if (row.Country in totals) {
+       if (row.Year in totals[row.Country]) {
+            totals[row.Country][row.Year]++;
+       }
+       else {
+            totals[row.Country][row.Year] = 1;
+       }
+    }
+    else {
+      totals[row.Country] = {};
+      totals[row.Country][row.Year] = 1;
+    }
+
+    return totals;
+};
+
+function get_medals(row) {
+    if (row.Country in medals) {
+       if (row.Sport in medals[row.Country]) {   
+          if (row.Year in medals[row.Country][row.Sport]) {
+              medals[row.Country][row.Sport][row.Year]++;
+          }
+          else {
+              medals[row.Country][row.Sport][row.Year] = 1;
+          }
+       }
+       else {
+          medals[row.Country][row.Sport] = {};
+          medals[row.Country][row.Sport][row.Year] = 1;
+       }
+    }
+    else {
+      medals[row.Country] = {};
+      medals[row.Country][row.Sport] = {};
+      medals[row.Country][row.Sport][row.Year] = 1;
+    }
+
+    return medals;
+};
+
+function transitionMultiples(svg) {
+  var t = svg.transition().duration(750),
+      g = t.selectAll(".group").attr("transform", function(d) { 
+        return "translate(0," + y0(d.key) + ")"; 
+      });
+
+  g.selectAll("rect")
+    .attr("x", function(d) { return x(d.date); })
+    .attr("y", function(d) { return y1(d.value); });
+
+  g.select(".group-label").attr("y", function(d) { return y1(d.values[0].value / 2); })
+};
+
+function create_group(tgroup, svg) {
   var group = svg.selectAll(".group")
-      .data(dataByGroup)
+      .data(tgroup)
       .enter().append("g")
       .attr("class", "group")
-      .attr("transform", function(d) { return "translate(0," + y0(d.key) + ")"; });
+      .attr("transform", function(d) {
+        var t = d;
+        return "translate(0," + y0(d.key) + ")"; 
+      });
 
   group.append("text")
       .attr("class", "group-label")
-      .attr("x", -80)
-      .text("Year")
-      .attr("y", function(d) { return 10 + y1(d.values[0].value / 2); })
+      .attr("x", -20)
+      .attr("y", function(d) { 
+        var t = d;
+        return 10 + y1(d.values[0].value / 2); 
+      })
       .attr("dy", ".05em")
       .style("text-anchor","left")
       .text(function(d) { 
@@ -132,45 +179,110 @@ d3.csv("./data/exercise2-olympics.csv", function(error, data) {
       });
 
   group.selectAll("rect")
-      .data(function(d) { return d.values; })
+      .data(function(d) { 
+        return d.values; 
+      })
       .enter().append("rect")
-      .style("fill", function(d) { return color(d.group); })
-      .attr("x", function(d) { return x(d.date); })
-      .attr("y", function(d) { return y1(d.value); })
+      .style("fill", function(d) { 
+        return color(d.group); 
+      })
+      .attr("x", function(d) { 
+        return x(d.date); 
+      })
+      .attr("y", function(d) { 
+        return y1(d.value);
+      })
       .attr("width", x.rangeBand())
-      .attr("height", function(d) { return y0.rangeBand() - y1(d.value); });
+      .attr("height", function(d) { 
+        return y0.rangeBand() - y1(d.value); 
+      });
+      //.text(function(d) { return d.value; })
+      //.style("fill", "white")
+      //.style("text-anchor", "middle");
 
-  group.filter(function(d, i) { return !i; }).append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + y0.rangeBand() + ")")
-      .call(xAxis);
+  group.filter(function(d, i) { 
+    return !i; 
+  }).append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + y0.rangeBand() + ")")
+    .call(xAxis);
 
-  d3.selectAll("input").on("change", change);
+  return group;
+};
 
-  var timeout = setTimeout(function() {
-    d3.select("input[value=\"stacked\"]").property("checked", true).each(change);
-  }, 2000);
+function create_nesting(total) {
+  var tdata = [];
 
-  function change() {
-    clearTimeout(timeout);
-    if (this.value === "multiples") transitionMultiples();
-    else transitionStacked();
+  for (var t in total) {
+    tdata.push({'group':"Total",'date':t,'value':total[t]});
+  }
+  return tdata;
+};
+
+function update_data(sports, years, medals, totals) {
+  var tdata = [];
+
+  for (var s in sports) {
+    for (var y in years) {
+      if (s in medals) {
+        if (y in medals[s]) {
+          tdata.push({'group':s,'date':y,'value':medals[s][y]});
+        }
+        else {
+          tdata.push({'group':s,'date':y,'value':0});
+        }
+      }
+      else {
+        tdata.push({'group':s,'date':y,'value':0});
+      }
+    }
   }
 
-  function transitionMultiples() {
-    var t = svg.transition().duration(750),
-        g = t.selectAll(".group").attr("transform", function(d) { 
-          return "translate(0," + y0(d.key) + ")"; 
-        });
-    g.selectAll("rect").attr("y", function(d) { return y1(d.value); });
-    g.select(".group-label").attr("y", function(d) { return y1(d.values[0].value / 2); })
+  for (var t in totals) {
+    tdata.push({'group':"Total",'date':t,'value':totals[t]});
   }
 
-  function transitionStacked() {
-    var t = svg.transition().duration(750),
-        g = t.selectAll(".group").attr("transform", "translate(0," + y0(y0.domain()[0]) + ")");
-    g.selectAll("rect").attr("y", function(d) { return y1(d.value + d.valueOffset); });
-    g.select(".group-label").attr("y", function(d) { return y1(d.values[0].value / 2 + d.values[0].valueOffset); })
-  }
+  return tdata;
+};
+
+d3.csv("./data/exercise2-olympics.csv", function(error, data) {
+  data.forEach(function(d) {
+    years[d.Year] = 1;
+    sports[d.Sport] = 1;
+    countries[d.Country] = 1;
+
+    medals = get_medals(d);
+    totals = get_total(d);
+  });
+
+  var tmedals = switch_country_medal(country_select, medals);
+  var ttotals = switch_country_total(country_select, totals);
+  data = update_data(sports, years, tmedals, ttotals);
+
+  var ckeys = Object.keys(countries);
+  countries = ckeys.sort();
+
+  var options = select.selectAll('option')
+      .data(countries).enter().append('option').text(function (d) { return d; })
+      .property("selected", function(d){ return d === country_select; });
+
+  data.forEach(function(d) {
+    d.date = parseDate(d.date);
+    d.value = +d.value;
+  });
+
+  dataByGroup = nest.entries(data);
+
+  x.domain(dataByGroup[0].values.map(function(d) {
+    var t = d.date; 
+    return d.date; 
+  }));
+
+  y0.domain(dataByGroup.map(function(d) { return d.key; }));
+  y1.domain([0, d3.max(data, function(d) { return d.value; })]).range([y0.rangeBand(), 0]);
+  
+  var group = create_group(dataByGroup, svg);
+
+  transitionMultiples(svg);
 });
 
