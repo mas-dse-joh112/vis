@@ -2,7 +2,6 @@
 var parseDate = d3.time.format("%Y").parse;
 
 var formatDate = function(d) {
-    var t = d;
     return d.getFullYear();
 };
 
@@ -29,9 +28,15 @@ var nest = d3.nest()
 var dataByGroup;
 
 var color = d3.scale.category10();
-var country_select = "United States";
+var country_select = "";
+//var country_select = "United States";
 
 var select = d3.select("body").append("div").append("select").attr('class','select').on('change', onchange);
+
+var divtooltip = d3.select("body")
+    .append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
 
 function create_svg() {
     d3.selectAll('svg').remove();
@@ -40,12 +45,11 @@ function create_svg() {
               .attr("width", width + margin.left + margin.right)
               .attr("height", height + margin.top + margin.bottom)
               .append("g")
-              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+              .attr("style", "outline: thin solid #e5e5e5;");
 
     return tsvg;
 }
-
-
 
 var svg = create_svg();
 
@@ -84,7 +88,7 @@ function onchange() {
 
     data = update_data(sports, years, tmedals, ttotals);
     svg = create_svg();
-
+    
     data.forEach(function(d) {
       d.date = parseDate(d.date);
       d.value = +d.value;
@@ -161,13 +165,12 @@ function create_group(tgroup, svg) {
       .enter().append("g")
       .attr("class", "group")
       .attr("transform", function(d) {
-        var t = d;
         return "translate(0," + y0(d.key) + ")"; 
       });
 
   group.append("text")
       .attr("class", "group-label")
-      .attr("x", -20)
+      .attr("x", -10)
       .attr("y", function(d) { 
         return 10 + y1(d.values[0].value / 2); 
       })
@@ -195,22 +198,33 @@ function create_group(tgroup, svg) {
       .attr("width", x.rangeBand())
       .attr("height", function(d) { 
         return y0.rangeBand() - y1(d.value); 
+      })
+      .on("mouseover", function(d) {
+        divtooltip.transition()
+          .duration(200)
+          .style("opacity", .9);
+        divtooltip.html("Number of medals won")
+        .style("left", (d3.event.pageX) + "px")
+        .style("top", (d3.event.pageY - 28) + "px");
+      })
+      .on("mouseout", function(d) {
+        divtooltip.transition()
+        .duration(500)
+        .style("opacity", 0);
       });
 
   group.selectAll("rectid")
       .data(function(d) {
-        var t = d;
         return d.values; 
       })
       .enter().append("text")
       .attr("x", function(d) {
-        var t = d.date;
-        return x(d.date); 
+        return x(d.date)+x.rangeBand()/2; 
       })
       .attr("y",function(d) {
-        var t = d.value;
         return y1(d.value); 
       })
+      .attr("dy", ".02em")
       .text(function(d) {
         if (d.value > 0) {
           return (d.value);
@@ -264,8 +278,6 @@ function update_data(sports, years, medals, totals) {
     }
   }
 
-  
-
   return tdata;
 };
 
@@ -286,9 +298,20 @@ d3.csv("./data/exercise2-olympics.csv", function(error, data) {
   var ckeys = Object.keys(countries);
   countries = ckeys.sort();
 
-  var options = select.selectAll('option')
-      .data(countries).enter().append('option').text(function (d) { return d; })
-      .property("selected", function(d){ return d === country_select; });
+  var optGroups = [{"key": "Countries", "value": countries}];
+
+  var options = select.selectAll('optgroup')
+      .data(optGroups)
+      .enter()
+      .append('optgroup')
+      .attr('label',function (d) { return d.key; })
+      .selectAll('option')
+      .data(function (d) { return d.value; })
+      .enter()
+      .append('option')
+      .attr('value', function (d) { return d; })
+      .text(function (d) { return d; });
+      //.property("selected", function(d){ return d === country_select; });
 
   data.forEach(function(d) {
     d.date = parseDate(d.date);
@@ -298,7 +321,6 @@ d3.csv("./data/exercise2-olympics.csv", function(error, data) {
   dataByGroup = nest.entries(data);
 
   x.domain(dataByGroup[0].values.map(function(d) {
-    var t = d.date; 
     return d.date; 
   }));
 
