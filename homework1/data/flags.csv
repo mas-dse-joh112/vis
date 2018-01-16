@@ -1,45 +1,46 @@
-"Korea, North"	images/kp.png
-"Korea, South"	images/kr.png
-Australia	images/au.png
-Austria	images/at.png
-Belarus	images/by.png
-Belgium	images/be.png
-Bulgaria	images/bg.png
-Canada	images/ca.png
-China	images/cn.png
-Croatia	images/hr.png
-Czech Republic	images/cz.png
-Czechoslovakia	images/wolymp.jpg
-Denmark	images/dk.png
-East Germany	images/wolymp.jpg
-Estonia	images/ee.png
-Finland	images/fi.png
-France	images/fr.png
-Germany	images/de.png
-Hungary	images/hu.png
-Italy	images/it.png
-Japan	images/jp.png
-Kazakhstan	images/kz.png
-Latvia	images/lv.png
-Liechtenstein	images/li.png
-Luxembourg	images/lu.png
-Netherlands	images/nl.png
-New Zealand	images/nz.png
-Norway	images/no.png
-Poland	images/pl.png
-Romania	images/ro.png
-Russia	images/ru.png
-Slovakia	images/sk.png
-Slovenia	images/si.png
-Soviet Union	images/wolymp.jpg
-Spain	images/es.png
-Sweden	images/se.png
-Switzerland	images/ch.png
-Ukraine	images/ua.png
-Unified Team	images/wolymp.jpg
-Unified Team of Germany	images/wolymp.jpg
-United Kingdom	images/gb.png
-United States	images/us.png
-Uzbekistan	images/uz.png
-West Germany	images/de.png
-Yugoslavia	images/wolymp.jpg
+Country,Flag
+"Korea, North",images/kp.png
+"Korea, South",images/kr.png
+Australia,images/au.png
+Austria,images/at.png
+Belarus,images/by.png
+Belgium,images/be.png
+Bulgaria,images/bg.png
+Canada,images/ca.png
+China,images/cn.png
+Croatia,images/hr.png
+Czech Republic,images/cz.png
+Czechoslovakia,images/wolymp.jpg
+Denmark,images/dk.png
+East Germany,images/wolymp.jpg
+Estonia,images/ee.png
+Finland,images/fi.png
+France,images/fr.png
+Germany,images/de.png
+Hungary,images/hu.png
+Italy,images/it.png
+Japan,images/jp.png
+Kazakhstan,images/kz.png
+Latvia,images/lv.png
+Liechtenstein,images/li.png
+Luxembourg,images/lu.png
+Netherlands,images/nl.png
+New Zealand,images/nz.png
+Norway,images/no.png
+Poland,images/pl.png
+Romania,images/ro.png
+Russia,images/ru.png
+Slovakia,images/sk.png
+Slovenia,images/si.png
+Soviet Union,images/wolymp.jpg
+Spain,images/es.png
+Sweden,images/se.png
+Switzerland,images/ch.png
+Ukraine,images/ua.png
+Unified Team,images/wolymp.jpg
+Unified Team of Germany,images/wolymp.jpg
+United Kingdom,images/gb.png
+United States,images/us.png
+Uzbekistan,images/uz.png
+West Germany,images/de.png
+Yugoslavia,images/wolymp.jpg
