@@ -30,7 +30,30 @@ var dataByGroup;
 var color = d3.scale.category10();
 var country_select = "United States";
 
-var select = d3.select("#sidebar").append("div").append("select").attr('class','select').on('change', onchange);
+var divtooltip = d3.select("#content")
+    .append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
+var select = d3.select("#sidebar")
+             .append("div")
+             .append("select")
+             .attr('class','select')
+             .on('change', onchange)
+             .on("mouseover", function(d) {
+                div_opt_tooltip.transition().duration(200).style("opacity", .9);
+                div_opt_tooltip.html("Countries participated in the Olympics")
+                .style("left", d3.event.layerX + 50 + "px")
+                .style("top", d3.event.pageY + "px");
+             })
+             .on("mouseout", function(d) {
+                div_opt_tooltip.transition().duration(500).style("opacity", 0);
+             });
+
+var div_opt_tooltip = d3.select("#sidebar")
+    .append("div")
+    .attr("class", "opt_tooltip")
+    .style("opacity", 0);
 
 function create_svg() {
     d3.selectAll('svg').remove();
@@ -43,11 +66,6 @@ function create_svg() {
 
     return tsvg;
 }
-
-var divtooltip = d3.select("#content")
-    .append("div")
-    .attr("class", "tooltip")
-    .style("opacity", 0);
 
 var svg = create_svg();
 var total_breakdown = {};
@@ -401,7 +419,7 @@ d3.csv("./data/exercise2-olympics.csv", function(error, data) {
   countries = ckeys.sort();
 
   var optGroups = [{"key": "Countries", "value": countries}];
-
+  
   var options = select.selectAll('optgroup')
       .data(optGroups)
       .enter()
@@ -414,21 +432,6 @@ d3.csv("./data/exercise2-olympics.csv", function(error, data) {
       .attr('value', function (d) { return d; })
       .text(function (d) { return d; })
       .property("selected", function(d){ return d === country_select; })
-
-      .on("mouseover", function(d) {
-        divtooltip.transition()
-          .duration(200)
-          .style("opacity", .9);
-
-        divtooltip.html("Countries participated in the Olympics")
-        .style("left", d3.event.sourceEvent.x + "px")
-        .style("top", d3.event.sourceEvent.y + "px");
-      })
-      .on("mouseout", function(d) {
-        divtooltip.transition()
-        .duration(500)
-        .style("opacity", 0);
-      });
 
   data.forEach(function(d) {
     d.date = parseDate(d.date);
