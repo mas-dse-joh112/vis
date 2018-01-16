@@ -1,3 +1,85 @@
+#h1 {
+    color: #ffffff;
+    font-family:  'Raleway';
+    font-weight: normal;
+    font-size: 4.5em;
+    letter-spacing: .2em;
+    line-height: 2em;
+    margin:0px;
+    text-align: center;
+    text-transform: uppercase;
+}
+#container {
+    width:1100px;
+    height:710px;
+    background-color: 0ffffff;
+    border: solid #696969;
+}
+#header {
+    width:100%;
+    height: 70px;
+    background-color: #696969;
+   /* background-repeat: no-repeat;
+    background: url('https://ibc-static.broad.msu.edu/sites/globaledge/blog/54496.jpg');
+    background-size: auto;*/
+}
+#sidebar {
+    height:600px;
+    width:190px;
+    background: #1abc9c;
+    float:left;
+    
+}
+
+#pic {
+  height:65px;
+  width:100px;
+  float: right;
+  position:absolute;
+  top:5px;
+  left:995px;
+}
+
+#picstat {
+  height:65px;
+  width:90px;
+  float: right;
+  position:absolute;
+  top:5px;
+  left:10px;
+}
+
+#content {
+    height:500px;
+    width:850px;
+    float:left;
+}
+#footer {
+    width:1100px;
+    height: 40px;
+    background-color: #696969;
+    float:left;
+}
+
+
+
+
+path { 
+    stroke: steelblue;
+    stroke-width: 2;
+    fill: none;
+}
+
+
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+
 body {
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	margin: auto;
@@ -16,12 +98,13 @@ text {
 div.tooltip {
     position: absolute;
     text-align: center;
+    vertical-align: middle;
     width: 60px;
-    height: 28px;
-    padding: 2px;
+    height: 40px;
+    padding: 1px;
     font: 10px sans-serif;
     background: lightsteelblue;
-    border: 1px;
+    border: 0px;
     border-radius: 8px;
     pointer-events: none;
 }
@@ -29,7 +112,7 @@ div.tooltip {
 /*CHART GENERAL*/
 .chart-wrapper{
 	margin-left:-.99%;
-	width: 102%;
+	width: 100%;
 }
 
 /*AXES*/
@@ -44,6 +127,7 @@ div.tooltip {
 .group-label {
 	font-weight: bold;
 	text-anchor: end;
+
 }
 
 form {
