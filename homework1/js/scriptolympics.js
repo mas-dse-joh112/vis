@@ -281,14 +281,14 @@ function create_group(tgroup, svg) {
       })
       .on("mouseover", function(d) {
         toolstr = get_breakdown_text(d);
-        
+
         divtooltip.transition()
           .duration(200)
           .style("opacity", .9);
 
         divtooltip.html(toolstr)
-        .style("left", (d3.select(this)) + "px")
-        .style("top", d3.event.pageY + "px");
+        .style("left", d3.event.layerX + "px")
+        .style("top", d3.event.pageY - 50 + "px");
       })
       .on("mouseout", function(d) {
         divtooltip.transition()
@@ -419,7 +419,7 @@ d3.csv("./data/exercise2-olympics.csv", function(error, data) {
         divtooltip.transition()
           .duration(200)
           .style("opacity", .9);
-          
+
         divtooltip.html("Countries participated in the Olympics")
         .style("left", d3.event.sourceEvent.x + "px")
         .style("top", d3.event.sourceEvent.y + "px");
