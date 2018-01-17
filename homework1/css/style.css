@@ -75,15 +75,6 @@ path {
 }
 
 
-
-.axis path,
-.axis line {
-    fill: none;
-    stroke: grey;
-    stroke-width: 1;
-    shape-rendering: crispEdges;
-}
-
 body {
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	margin: auto;
@@ -134,7 +125,6 @@ div.tooltip {
 .axis path, .axis line {
   fill: none;
   stroke: #000;
-  /*stroke: #3a403d;*/
   stroke-width: 1px;
   shape-rendering: crispEdges;
 }
