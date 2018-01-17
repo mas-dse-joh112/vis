@@ -384,10 +384,8 @@ function update_data(sports, years, medals, totals) {
 
 function renderMapImg(v_country) {
   var isvg=d3.select("#pic").append("svg")
-    .attr('height',60)
-    .attr('width',100)
     .append("image")
-    .attr('height',60)
+    .attr('height',65)
     .attr('width',100);
   
   d3.csv("data/flags.csv", function(data) 
@@ -420,7 +418,7 @@ d3.csv("./data/exercise2-olympics.csv", function(error, data) {
 
   var optGroups = [{"key": "Countries", "value": countries}];
   
-  var options = select.selectAll('optgroup')
+  select.selectAll('optgroup')
       .data(optGroups)
       .enter()
       .append('optgroup')
