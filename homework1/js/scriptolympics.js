@@ -39,6 +39,7 @@ var select = d3.select("#sidebar")
              .append("div")
              .append("select")
              .attr('class','select')
+             .style('width', "100%")
              .on('change', onchange)
              .on("mouseover", function(d) {
                 div_opt_tooltip.transition().duration(200).style("opacity", .9);
@@ -76,6 +77,7 @@ var years = {};
 var sports = {};
 var countries = {};
 var totals = {};
+var flags = [];
 
 function switch_country_medal(country, medals) {
   for (var c in medals) {
@@ -388,17 +390,21 @@ function renderMapImg(v_country) {
     .attr('height',65)
     .attr('width',100);
   
-  d3.csv("data/flags.csv", function(data) 
-  {
-    data.forEach(function(d) {
-      if (d.Country==v_country) {
-        isvg.attr("xlink:href",d.Flag);
-      }
-    });
-  });
+  if (v_country in flags) {
+    isvg.attr("xlink:href",flags[v_country]);
+  }
+  else {
+    isvg.attr("xlink:href","img/wolymp.jpg");
+  }
 };
 
-d3.csv("./data/exercise2-olympics.csv", function(error, data) {
+d3.csv("data/flags.csv", function(error, data) {
+  data.forEach(function(d) {
+    flags[d.Country] = d.Flag;
+  });
+});
+
+d3.csv("data/exercise2-olympics.csv", function(error, data) {
   data.forEach(function(d) {
     years[d.Year] = 1;
     sports[d.Sport] = 1;
