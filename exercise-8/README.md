@@ -24,7 +24,8 @@ bokeh serve cases.py --port yourPort#
 
 then navigate to http://localhost:yourPort#/cases with desired browser
 
-5. The notebook requires a sample file in site-packages/bokeh/sampledata the python library directory. 
-   The notebook will download the files and write to this sampledata directory if the directory does not exist.
+5. The notebook requires a sample file in one's .bokeh home directory (~/.bokeh/data). 
+   The notebook will download the files and write to this sample data directory if the directory does not exist.
 
 6. Please issue jupyter notebook from this root directory to see the notebook, which is separate from the bokeh app.
+   The notebook requires folium and holoviews (pip install them if needed)
