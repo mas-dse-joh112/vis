@@ -29,3 +29,4 @@ then navigate to http://localhost:yourPort#/cases with desired browser
 
 6. Please issue jupyter notebook from this root directory to see the notebook, which is separate from the bokeh app.
    The notebook requires folium and holoviews (pip install them if needed)
+   The notebook opens a new tab with "cases.html" output file to display the map showing the positive West Nile Virus cases reported overall
