@@ -1,5 +1,6 @@
 
-1. This is a bokeh interactive application, which requires at least bokeh==0.12.11 to see the interactivity.  Please issue the following command to upgrade if needed.
+1. There are two separate software solutions to run, a bokeh interactive application and a jupyter notebook.
+   The bokeh interactive application requires at least bokeh==0.12.11 to see the interactivity.  Please issue the following command to upgrade if needed.
 
 pip install bokeh==0.12.11
 
@@ -23,4 +24,7 @@ bokeh serve cases.py --port yourPort#
 
 then navigate to http://localhost:yourPort#/cases with desired browser
 
-5. The notebook requires a sample file in bokeh/sampledata directory.  The notebook will download the files from this directory if the directory does not exist.
+5. The notebook requires a sample file in site-packages/bokeh/sampledata the python library directory. 
+   The notebook will download the files and write to this sampledata directory if the directory does not exist.
+
+6. Please issue jupyter notebook from this root directory to see the notebook, which is separate from the bokeh app.
