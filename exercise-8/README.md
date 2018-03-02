@@ -15,7 +15,7 @@ pip install flexx
 
 bokeh serve cases.py
 
-2. note: Please ensure port 5006 is available. Once the Tornado web server is started, navigate to http://localhost:5006/nodes with your web browser to see the presentation
+4. note: Please ensure port 5006 is available. Once the Tornado web server is started, navigate to http://localhost:5006/nodes with your web browser to see the presentation
 
 If 5006 port is not available, please pick a port that is available, then issue the following command
 
@@ -23,3 +23,4 @@ bokeh serve cases.py --port yourPort#
 
 then navigate to http://localhost:yourPort#/cases with desired browser
 
+5. The notebook requires a sample file in bokeh/sampledata directory.  The notebook will download the files from this directory if the directory does not exist.
